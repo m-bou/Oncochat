@@ -91,7 +91,7 @@ async def main() -> None:
     status: dict = {}
     await warmup(deps, status)  # same as the app at startup: latencies below are warm-model latencies
     print("warm-up:", status, flush=True)
-    cases = [c for c in yaml.safe_load((HERE / "questions.yml").read_text())
+    cases = [c for c in yaml.safe_load((HERE / "questions.yml").read_text(encoding="utf-8"))
              if not args.only or args.only in c["id"]]
 
     rows = []
@@ -129,7 +129,7 @@ async def main() -> None:
     stamp = time.strftime("%Y%m%d-%H%M%S")
     (HERE / "results").mkdir(exist_ok=True)
     (HERE / "results" / f"{stamp}{'-' + args.tier if args.tier else ''}.json").write_text(
-        json.dumps({"summary": summary, "rows": rows}, indent=2, ensure_ascii=False))
+        json.dumps({"summary": summary, "rows": rows}, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 if __name__ == "__main__":

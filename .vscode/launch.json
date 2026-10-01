@@ -1,0 +1,98 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API: debug",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app.main:app", "--host", "0.0.0.0", "--port", "8000"],
+      "cwd": "${workspaceFolder}",
+      "jinja": false,
+      "justMyCode": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "API: debug (skip model warm-up)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app.main:app", "--host", "0.0.0.0", "--port", "8000"],
+      "cwd": "${workspaceFolder}",
+      // faster restarts while iterating; the first question then pays the model load
+      "env": { "LLM_WARMUP": "false" },
+      "justMyCode": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Tests: all (offline)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-q"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Tests: current file",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-q", "${file}"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Tests: live (needs Ollama)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-q", "-m", "live"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Eval: adaptive (production behaviour)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "eval.run_eval",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Eval: forced tier",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "eval.run_eval",
+      "args": ["--tier", "${input:tier}", "--no-escalation"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Eval: single case",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "eval.run_eval",
+      "args": ["--only", "${input:caseId}"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "tier",
+      "type": "pickString",
+      "description": "Model tier to force",
+      "options": ["fast", "smart"],
+      "default": "fast"
+    },
+    {
+      "id": "caseId",
+      "type": "promptString",
+      "description": "Substring of the case id in eval/questions.yml (e.g. brief, esophageal, topic_switch)",
+      "default": "brief"
+    }
+  ]
+}

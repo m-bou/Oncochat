@@ -1,5 +1,7 @@
 # OncoChat: ask a gene-expression dataset in plain language
 
+[![CI](https://github.com/m-bou/Oncochat/actions/workflows/ci.yml/badge.svg)](https://github.com/m-bou/Oncochat/actions/workflows/ci.yml)
+
 A proof of concept of an agentic assistant for non-technical stakeholders. You ask a question in English or
 French. A local LLM picks and calls typed tools built on the two provided functions (`get_targets`,
 `get_expressions`), deterministic guards check the answer against the data, and a Claude-like web UI streams
@@ -26,6 +28,9 @@ Every command exists in two equivalent runners:
 | `./run.sh help` | `.\run.ps1 help` | All commands |
 
 Both scripts are thin wrappers. Plain `docker compose up --build` works everywhere too.
+
+On every push and pull request, GitHub Actions runs ruff and the offline test suite on Ubuntu and Windows
+(`.github/workflows/ci.yml`). No model or Docker is needed, because the tests use a scripted fake LLM.
 
 ### Option A: Docker (recommended for reviewers)
 

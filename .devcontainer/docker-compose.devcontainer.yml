@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      args:
+        INSTALL_DEV: "true"       # pytest, ruff
+    volumes:
+      - .:/workspace:cached      # live source; the venv stays in the image at /opt/venv
+    working_dir: /workspace
+    environment:
+      DB_PATH: /workspace/var/oncochat.db
+    # Keep the container alive; start the server yourself:  ./run.sh dev  (uvicorn --reload)
+    command: ["sleep", "infinity"]
+    healthcheck:
+      disable: true

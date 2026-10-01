@@ -1,0 +1,23 @@
+{
+  "name": "OncoChat",
+  // Reuses the reviewers' compose stack (ollama + model pull + app) and overrides the app service for development.
+  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.devcontainer.yml"],
+  "service": "app",
+  "runServices": ["ollama", "ollama-init", "app"],
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "postCreateCommand": "./run.sh init && uv sync --frozen",
+  "forwardPorts": [8000],
+  "portsAttributes": { "8000": { "label": "OncoChat", "onAutoForward": "notify" } },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-python.debugpy", "ms-python.vscode-pylance", "charliermarsh.ruff", "redhat.vscode-yaml", "eamodio.gitlens", "waderyan.gitblame"],
+      "settings": {
+        "python.defaultInterpreterPath": "/opt/venv/bin/python",
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["tests"],
+        "[python]": { "editor.defaultFormatter": "charliermarsh.ruff" }
+      }
+    }
+  }
+}

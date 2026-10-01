@@ -1,0 +1,12 @@
+.git
+.venv
+.venv-docker
+.uv-cache
+.pytest_cache
+.ruff_cache
+var
+eval/results
+**/__pycache__
+*.png
+.vscode
+.env

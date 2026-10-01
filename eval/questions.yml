@@ -1,0 +1,108 @@
+# Golden questions for the live evaluation (eval/run_eval.py). Each case checks *behaviour*, not wording:
+#   status:              accepted final statuses
+#   tools_any:           at least one of these tools must have been called
+#   table_contains:      gene/cancer names that must appear in the UI tables
+#   table_values:        exact values that must appear in the UI tables (catches the get_expressions bug)
+#   answer_contains_any: at least one substring (case-insensitive) in the prose answer
+#   answer_contains_all: every substring (case-insensitive) in the prose answer
+#   must_not_contain:    substrings forbidden in answer + tables (catches hallucination / substitution)
+#   no_tables:           true if no data table may be shown
+#   history:             previous turns, for follow-up questions
+
+# --- the four questions of the brief ---------------------------------------------------------------
+- id: brief_help
+  question: How can you help me?
+  expect: {status: [help], answer_contains_any: [lung]}
+
+- id: brief_lung_targets
+  question: What are the main genes involved in lung cancer?
+  expect:
+    status: [ok]
+    tools_any: [get_targets, summarize_expressions, top_genes]
+    table_contains: [ALK, RET, ROS1, STK11, KRAS]
+    answer_contains_any: [ALK, KRAS, RET]
+
+- id: brief_breast_median
+  question: What is the median value expression of genes involved in breast cancer?
+  expect:
+    status: [ok]
+    tools_any: [summarize_expressions, get_expressions]
+    table_values: {TP53: 0.233, BRCA1: 0.094, PIK3CA: 0.449, ESR1: 0.716}
+    must_not_contain: ["0.373"]   # TP53 value of renal: the original get_expressions bug
+
+- id: brief_esophageal
+  question: What is the median value expression of genes involved in esophageal cancer?
+  expect:
+    status: [ok, fallback]
+    answer_contains_any: ["not", "no data", "don't", "unavailable", "isn't", "there is no"]
+    must_not_contain: [CLDN18, FGFR2, RHOA, "0.453"]   # gastric data = silent substitution
+    no_tables: true
+
+# --- robustness -----------------------------------------------------------------------------------
+- id: synonym_kidney
+  question: Which genes are involved in kidney cancer?
+  expect: {status: [ok], tools_any: [get_targets, summarize_expressions], table_contains: [VHL, PBRM1]}
+
+- id: typo_brest
+  question: genes in brest cancer?
+  expect: {status: [ok], table_contains: [BRCA1, ESR1]}
+
+- id: french_lung
+  question: Quels sont les principaux gènes impliqués dans le cancer du poumon ?
+  expect: {status: [ok], table_contains: [ALK, KRAS], answer_contains_any: [gène, gene, ALK]}
+
+- id: reverse_lookup_tp53
+  question: In which cancers is TP53 involved?
+  expect:
+    status: [ok]
+    tools_any: [find_cancers_for_gene]
+    table_contains: [breast, ovarian, renal, glioblastoma]
+    answer_contains_any: ["8", eight]   # all 8 cancers, not a truncated subset
+
+- id: ranking_prostate
+  question: What are the 3 most expressed genes in prostate cancer?
+  expect: {status: [ok], tools_any: [top_genes, summarize_expressions], table_contains: [MYC, CDK12, ATM]}
+
+- id: gene_in_cancer
+  question: What is the expression of KRAS in pancreatic cancer?
+  expect: {status: [ok], table_values: {KRAS: 0.241}, must_not_contain: ["0.885", "0.003"]}
+
+- id: compare_kras
+  question: Compare the expression of KRAS between lung and colorectal cancer
+  expect: {status: [ok], answer_contains_all: ["0.885", "0.359"], must_not_contain: ["0.241"]}
+
+- id: unknown_liver
+  question: What are the genes involved in liver cancer?
+  expect:
+    status: [ok, fallback]
+    answer_contains_any: ["not", "no data", "don't", "isn't", "there is no"]
+    no_tables: true
+
+- id: off_topic
+  question: What's the weather like in Paris today?
+  expect: {status: [ok, fallback], no_tables: true, must_not_contain: ["°C", "sunny", "rain"]}
+
+- id: followup_lung
+  question: And what are their expression values?
+  history:
+    - question: What are the main genes involved in lung cancer?
+      answer: "The genes involved in lung cancer are ALK, RET, ROS1, STK11 and KRAS."
+  expect: {status: [ok], table_values: {KRAS: 0.359, ALK: 0.215}}
+
+- id: topic_switch_fr     # found in manual testing: with history, small models answered from "memory"
+  question: Quels sont les principaux gènes impliqués dans le cancer du poumon ?
+  history:
+    - question: What is the median value expression of genes involved in breast cancer?
+      answer: "The median expression is 0.435; the highest is ESR1 (0.716) and the lowest BRCA2 (0.032)."
+  expect: {status: [ok], table_contains: [ALK, KRAS], must_not_contain: ["0.716", EGFR]}
+
+- id: topic_switch_unknown   # found in manual testing: answered with ESR1 from the previous (breast) turn
+  question: What is the median value expression of genes involved in esophageal cancer?
+  history:
+    - question: What is the median value expression of genes involved in breast cancer?
+      answer: "The median expression is 0.435; the highest is ESR1 (0.716) and the lowest BRCA2 (0.032)."
+  expect:
+    status: [ok, fallback]
+    answer_contains_any: ["not", "no data", "don't", "unavailable", "isn't", "there is no", "ne sais pas"]
+    must_not_contain: ["0.716", "0.435"]
+    no_tables: true

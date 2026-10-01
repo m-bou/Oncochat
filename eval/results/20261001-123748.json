@@ -1,0 +1,662 @@
+{
+  "summary": {
+    "n": 30,
+    "pass_rate": 1.0,
+    "escalation_rate": 0.0,
+    "tier_counts": {
+      "fast": 26,
+      "smart": 2
+    },
+    "latency_ms": {
+      "fast": {
+        "p50": 13274.6,
+        "p95": 20256.5,
+        "mean": 13817.2
+      },
+      "smart": {
+        "p50": 16278.2,
+        "p95": 23953.5,
+        "mean": 20115.8
+      }
+    },
+    "models": {
+      "fast": "qwen2.5:3b",
+      "smart": "qwen2.5:7b"
+    },
+    "forced_tier": null,
+    "escalation": true,
+    "data_version": "a94c54d47e23"
+  },
+  "rows": [
+    {
+      "id": "brief_help",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 13.3,
+      "status": "help",
+      "tier": null,
+      "escalated": false,
+      "tools": [],
+      "answer": "I answer natural-language questions about a gene-expression dataset (81 rows) covering 10 cancer indications: breast, colorectal, gastric, glioblastoma, lung, melanoma, ovarian, pancreatic, prostate, renal.\n\nI can list the genes involved in a cancer, give their median expression values, rank genes, or find the cancers a gene is involved in. For example:\n- *Which cancers do you have data on?*\n- *What are the main genes involved in lung cancer?*\n- *What is the expression of TP53 and KRAS in lung?*\n- *What is the median value expression of genes involved in breast cancer?*\n- *In which cancers is TP53 involved?*\n- *What are the 3 most expressed genes in prostate cancer?*\n\nI only answer from the data: if something is not in it, I will tell you.",
+      "request_id": "302e289e29154512803dcd9c3a7ad884"
+    },
+    {
+      "id": "brief_lung_targets",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 12987.0,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "top_genes",
+          {
+            "cancer": "lung",
+            "n": 5,
+            "order": "highest"
+          }
+        ]
+      ],
+      "answer": "In lung cancer, the main genes involved are RET, STK11, KRAS, ALK, and ROS1, with RET being the most expressed gene.",
+      "request_id": "baefe6521bfc4cbaa1ceed6f876f0d7e"
+    },
+    {
+      "id": "brief_breast_median",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 17508.6,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "summarize_expressions",
+          {
+            "cancer": "breast"
+          }
+        ]
+      ],
+      "answer": "The median expression value of genes involved in breast cancer is 0.435, with the highest expression seen for the gene ESR1 at 0.716. The lowest expression is seen for the gene BRCA2 at 0.032.",
+      "request_id": "25d83caced2a420aa4268f4886c133f4"
+    },
+    {
+      "id": "brief_esophageal",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 13642.4,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_expressions",
+          {
+            "genes": [
+              "ESPRC",
+              "MAPRE4",
+              "SYNE2"
+            ],
+            "cancer": "esophageal"
+          }
+        ]
+      ],
+      "answer": "The available cancer indications in the dataset are: breast, colorectal, gastric, glioblastoma, lung, melanoma, ovarian, pancreatic, prostate, renal. There is no esophageal cancer in the dataset.",
+      "request_id": "506fdbad016e4a4db91d220856de69a3"
+    },
+    {
+      "id": "synonym_kidney",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 20802.3,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "find_cancers_for_gene",
+          {
+            "gene": "renal"
+          }
+        ],
+        [
+          "get_targets",
+          {
+            "cancer": "renal"
+          }
+        ]
+      ],
+      "answer": "The genes involved in kidney cancer are TSC1, PBRM1, SETD2, TSC2, PTEN, BAP1, TP53, MTOR, KDM5C, and VHL. There are 10 genes in total.",
+      "request_id": "729defaed73149208ba16481bc70cf46"
+    },
+    {
+      "id": "typo_brest",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 13274.6,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_targets",
+          {
+            "cancer": "brest"
+          }
+        ]
+      ],
+      "answer": "In breast cancer, the following genes are involved: \n\n- BRCA2\n- BRCA1\n- TP53\n- GATA3\n- CDH1\n- ESR1\n- MAP3K1\n- HER2\n- PIK3CA\n- AKT1\n\nThere are 10 genes involved in breast cancer.",
+      "request_id": "37f78f50b12949f3ba277d7dedce88ee"
+    },
+    {
+      "id": "french_lung",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 18808.7,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "summarize_expressions",
+          {
+            "cancer": "lung"
+          }
+        ]
+      ],
+      "answer": "Les gènes principalement impliqués dans le cancer du poumon sont RET, STK11, KRAS, ALK et ROS1. La valeur médiane la plus élevée est détectée chez le gène RET avec une valeur de 0,763. La valeur médiane la plus basse est détectée chez le gène ROS1 avec une valeur de 0,102. La moyenne des valeurs est de 0,3638.",
+      "request_id": "62269a76b9cd49febc2169cb2687451b"
+    },
+    {
+      "id": "reverse_lookup_tp53",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 15707.7,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "find_cancers_for_gene",
+          {
+            "gene": "TP53"
+          }
+        ]
+      ],
+      "answer": "TP53 is involved in the following cancers with the given expression values (highest first): ovarian (0.972), glioblastoma (0.822), colorectal (0.643), pancreatic (0.489), melanoma (0.385), renal (0.373), breast (0.233), and gastric (0.071).",
+      "request_id": "220a31a3f25d4b669fcbfe3465a86384"
+    },
+    {
+      "id": "ranking_prostate",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 12941.4,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "top_genes",
+          {
+            "cancer": "prostate",
+            "n": 3,
+            "order": "highest"
+          }
+        ]
+      ],
+      "answer": "In prostate cancer, the 3 most expressed genes are:\n\n- MYC with a median expression value of 0.973\n- CDK12 with a median expression value of 0.862\n- ATM with a median expression value of 0.829",
+      "request_id": "ce4525459ad446ab9bd03795fc8032e6"
+    },
+    {
+      "id": "gene_in_cancer",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 8343.1,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_expressions",
+          {
+            "genes": [
+              "KRAS"
+            ],
+            "cancer": "pancreatic"
+          }
+        ]
+      ],
+      "answer": "The median expression value of KRAS in pancreatic cancer is 0.241.",
+      "request_id": "67cc9479faff441d804334b4f99b6448"
+    },
+    {
+      "id": "compare_kras",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 23953.5,
+      "status": "ok",
+      "tier": "smart",
+      "escalated": false,
+      "tools": [
+        [
+          "get_expressions",
+          {
+            "cancer": [
+              "lung",
+              "colorectal"
+            ],
+            "genes": [
+              "KRAS"
+            ]
+          }
+        ]
+      ],
+      "answer": "The median expression of KRAS in lung cancer is 0.359, while in colorectal cancer it is 0.885.",
+      "request_id": "5766203aba7548c3873b3d318e2e3b9f"
+    },
+    {
+      "id": "unknown_liver",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 10762.9,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "list_cancer_types",
+          {}
+        ]
+      ],
+      "answer": "The dataset does not contain information about genes involved in liver cancer. The available cancer indications in the dataset are: breast, colorectal, gastric, glioblastoma, lung, melanoma, ovarian, pancreatic, prostate, and renal.",
+      "request_id": "d0a171aa84d94d4f9660e3c826c49e2a"
+    },
+    {
+      "id": "off_topic",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 4762.0,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [],
+      "answer": "The question seems to be about weather in Paris, but I can't provide that information as it's not related to the dataset. How may I assist you with the dataset?",
+      "request_id": "bde369395990444ba7c6ef451f59db87"
+    },
+    {
+      "id": "followup_lung",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 19175.8,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_expressions",
+          {
+            "genes": [
+              "ALK",
+              "RET",
+              "ROS1",
+              "STK11",
+              "KRAS"
+            ],
+            "cancer": "lung"
+          }
+        ]
+      ],
+      "answer": "The expression values for the genes involved in lung cancer are as follows:\n- ALK: 0.215\n- RET: 0.763\n- ROS1: 0.102\n- STK11: 0.38\n- KRAS: 0.359",
+      "request_id": "2adbb40bdd864ed58bfb92f9c62777eb"
+    },
+    {
+      "id": "topic_switch_fr",
+      "rep": 0,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 13085.4,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_targets",
+          {
+            "cancer": "lung"
+          }
+        ]
+      ],
+      "answer": "Les principaux gènes impliqués dans le cancer du poumon sont ALK, RET, ROS1, STK11 et KRAS.",
+      "request_id": "c39acf91ad0249c4aaf685d478ee3576"
+    },
+    {
+      "id": "brief_help",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 8.3,
+      "status": "help",
+      "tier": null,
+      "escalated": false,
+      "tools": [],
+      "answer": "I answer natural-language questions about a gene-expression dataset (81 rows) covering 10 cancer indications: breast, colorectal, gastric, glioblastoma, lung, melanoma, ovarian, pancreatic, prostate, renal.\n\nI can list the genes involved in a cancer, give their median expression values, rank genes, or find the cancers a gene is involved in. For example:\n- *Which cancers do you have data on?*\n- *What are the main genes involved in lung cancer?*\n- *What is the expression of TP53 and KRAS in lung?*\n- *What is the median value expression of genes involved in breast cancer?*\n- *In which cancers is TP53 involved?*\n- *What are the 3 most expressed genes in prostate cancer?*\n\nI only answer from the data: if something is not in it, I will tell you.",
+      "request_id": "2d3657b2550e48b6a33f637daa48e272"
+    },
+    {
+      "id": "brief_lung_targets",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 15484.6,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "top_genes",
+          {
+            "order": "highest",
+            "cancer": "lung",
+            "n": 5
+          }
+        ]
+      ],
+      "answer": "The main genes involved in lung cancer, ranked by their median expression values from highest to lowest, are:\n\n- RET\n- STK11\n- KRAS\n- ALK\n- ROS1",
+      "request_id": "07385e4c4ca94e9a8d1d718ec0e6cfcb"
+    },
+    {
+      "id": "brief_breast_median",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 18856.5,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "summarize_expressions",
+          {
+            "cancer": "breast"
+          }
+        ]
+      ],
+      "answer": "The median expression value of genes involved in breast cancer is 0.435, with the highest expression seen for the gene ESR1 at 0.716. The lowest expression is seen for the gene BRCA2 at 0.032.",
+      "request_id": "850f705d624a4451b87ecaba1953be33"
+    },
+    {
+      "id": "brief_esophageal",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 14258.7,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_expressions",
+          {
+            "cancer": "esophageal",
+            "genes": [
+              "ESPRC",
+              "MAPRE4",
+              "SYNE2"
+            ]
+          }
+        ]
+      ],
+      "answer": "The available cancer indications in the dataset are: breast, colorectal, gastric, glioblastoma, lung, melanoma, ovarian, pancreatic, prostate, renal. There is no esophageal cancer in the dataset.",
+      "request_id": "92911eab89f44abfb09c1d6e415355b2"
+    },
+    {
+      "id": "synonym_kidney",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 20256.5,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "find_cancers_for_gene",
+          {
+            "gene": "renal"
+          }
+        ],
+        [
+          "get_targets",
+          {
+            "cancer": "renal"
+          }
+        ]
+      ],
+      "answer": "The genes involved in kidney cancer are TSC1, PBRM1, SETD2, TSC2, PTEN, BAP1, TP53, MTOR, KDM5C, and VHL. There are 10 genes in total.",
+      "request_id": "abb1028b71634df19db38f58e5c99d10"
+    },
+    {
+      "id": "typo_brest",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 13235.5,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_targets",
+          {
+            "cancer": "brest"
+          }
+        ]
+      ],
+      "answer": "In breast cancer, the following genes are involved: \n\n- BRCA2\n- BRCA1\n- TP53\n- GATA3\n- CDH1\n- ESR1\n- MAP3K1\n- HER2\n- PIK3CA\n- AKT1\n\nThere are 10 genes involved in breast cancer.",
+      "request_id": "745676c659a54025b7aaa9a45bea24d0"
+    },
+    {
+      "id": "french_lung",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 17496.1,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "summarize_expressions",
+          {
+            "cancer": "lung"
+          }
+        ]
+      ],
+      "answer": "Les gènes principalement impliqués dans le cancer du poumon sont RET, STK11, KRAS, ALK et ROS1. La valeur médiane la plus élevée est détectée chez le gène RET avec une valeur de 0,763. La valeur médiane la plus basse est détectée chez le gène ROS1 avec une valeur de 0,102. La moyenne des valeurs est de 0,3638.",
+      "request_id": "3fc23077a312473394f68cff9102c49f"
+    },
+    {
+      "id": "reverse_lookup_tp53",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 15494.1,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "find_cancers_for_gene",
+          {
+            "gene": "TP53"
+          }
+        ]
+      ],
+      "answer": "TP53 is involved in the following cancers with the given expression values (highest first): ovarian (0.972), glioblastoma (0.822), colorectal (0.643), pancreatic (0.489), melanoma (0.385), renal (0.373), breast (0.233), and gastric (0.071).",
+      "request_id": "65a9eaf697874885a2a30b21220e9b60"
+    },
+    {
+      "id": "ranking_prostate",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 12829.5,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "top_genes",
+          {
+            "cancer": "prostate",
+            "n": 3,
+            "order": "highest"
+          }
+        ]
+      ],
+      "answer": "In prostate cancer, the 3 most expressed genes are:\n\n- MYC with a median expression value of 0.973\n- CDK12 with a median expression value of 0.862\n- ATM with a median expression value of 0.829",
+      "request_id": "02e984adb2084b1eab9d259dee76b700"
+    },
+    {
+      "id": "gene_in_cancer",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 8687.3,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_expressions",
+          {
+            "cancer": "pancreatic",
+            "genes": [
+              "KRAS"
+            ]
+          }
+        ]
+      ],
+      "answer": "The median expression value of KRAS in pancreatic cancer is 0.241.",
+      "request_id": "9fcf2dcf29b94dcaa0468646b1a0eb08"
+    },
+    {
+      "id": "compare_kras",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 16278.2,
+      "status": "ok",
+      "tier": "smart",
+      "escalated": false,
+      "tools": [
+        [
+          "get_expressions",
+          {
+            "cancer": [
+              "lung",
+              "colorectal"
+            ],
+            "genes": [
+              "KRAS"
+            ]
+          }
+        ]
+      ],
+      "answer": "The median expression of KRAS in colorectal cancer is 0.885, while in lung cancer it is 0.359.",
+      "request_id": "7acb4a29ef084447b815f1201152cc36"
+    },
+    {
+      "id": "unknown_liver",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 9757.5,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "list_cancer_types",
+          {}
+        ]
+      ],
+      "answer": "The dataset does not contain information about genes involved in liver cancer. The available cancer indications in the dataset are: breast, colorectal, gastric, glioblastoma, lung, melanoma, ovarian, pancreatic, prostate, and renal.",
+      "request_id": "3d397b44d9054f738567c1d85b0b1df2"
+    },
+    {
+      "id": "off_topic",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 4359.0,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [],
+      "answer": "The question seems to be about weather in Paris, but I can't provide that information as it's not related to the dataset. How may I assist you with the dataset?",
+      "request_id": "2de035c76071410c9b7dc783ec8dedf2"
+    },
+    {
+      "id": "followup_lung",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 16307.0,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_expressions",
+          {
+            "genes": [
+              "ALK",
+              "RET",
+              "ROS1",
+              "STK11",
+              "KRAS"
+            ],
+            "cancer": "lung"
+          }
+        ]
+      ],
+      "answer": "The expression values for the genes involved in lung cancer are as follows:\n- ALK: 0.215\n- RET: 0.763\n- ROS1: 0.102\n- STK11: 0.38\n- KRAS: 0.359",
+      "request_id": "c022bba5fe3e4c7992e5032d78a7209b"
+    },
+    {
+      "id": "topic_switch_fr",
+      "rep": 1,
+      "pass": true,
+      "failures": [],
+      "latency_ms": 10422.0,
+      "status": "ok",
+      "tier": "fast",
+      "escalated": false,
+      "tools": [
+        [
+          "get_targets",
+          {
+            "cancer": "lung"
+          }
+        ]
+      ],
+      "answer": "Les principaux gènes impliqués dans le cancer du poumon sont ALK, RET, ROS1, STK11 et KRAS.",
+      "request_id": "c83b26f31f6f4a58b284e44c1e6db869"
+    }
+  ]
+}

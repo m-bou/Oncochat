@@ -1,0 +1,125 @@
+{
+  // Tasks (Terminal > Run Task, or Ctrl+Shift+B for the default build task). Each task wraps the project runner:
+  // run.sh on macOS / Linux / devcontainer (called through bash, so the executable bit does not matter) and
+  // run.ps1 on Windows (through Windows PowerShell with -ExecutionPolicy Bypass, so no policy change is needed).
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Stack: up",
+      "detail": "Build and start ollama + model pull + app (docker compose)",
+      "type": "shell",
+      "command": "bash ./run.sh up",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 up" },
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Stack: down",
+      "type": "shell",
+      "command": "bash ./run.sh down",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 down" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Stack: logs",
+      "type": "shell",
+      "command": "bash ./run.sh logs",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 logs" },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Stack: status",
+      "detail": "Container status and /api/health",
+      "type": "shell",
+      "command": "bash ./run.sh status",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 status" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: API with auto-reload",
+      "detail": "uvicorn --reload on :8000 (use the 'API: debug' launch config for breakpoints)",
+      "type": "shell",
+      "command": "bash ./run.sh dev",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 dev" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "python",
+        "pattern": { "regexp": "^\\s*File \"(.+)\", line (\\d+)", "file": 1, "line": 2 },
+        "background": {
+          "activeBegins": true,
+          "beginsPattern": "Will watch for changes|Started reloader process",
+          "endsPattern": "Application startup complete"
+        }
+      }
+    },
+    {
+      "label": "Test: offline suite",
+      "detail": "58 tests with a scripted fake LLM, about 1 s",
+      "type": "shell",
+      "command": "bash ./run.sh test",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 test" },
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint: ruff",
+      "type": "shell",
+      "command": "bash ./run.sh lint --output-format=concise",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 lint --output-format=concise" },
+      "problemMatcher": {
+        "owner": "ruff",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.+?):(\\d+):(\\d+): (\\w+) (.*)$",
+          "file": 1, "line": 2, "column": 3, "code": 4, "message": 5
+        }
+      }
+    },
+    {
+      "label": "Lint: format + fix",
+      "type": "shell",
+      "command": "bash ./run.sh fmt",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 fmt" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Eval: live (adaptive)",
+      "detail": "Golden questions against Ollama, about 5 min on CPU",
+      "type": "shell",
+      "command": "bash ./run.sh eval",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 eval" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Eval: live (forced tier)",
+      "type": "shell",
+      "command": "bash ./run.sh eval --tier ${input:tier} --no-escalation",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 eval --tier ${input:tier} --no-escalation" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Eval: repeat N times (variance)",
+      "type": "shell",
+      "command": "bash ./run.sh eval --repeat ${input:repeat}",
+      "windows": { "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run.ps1 eval --repeat ${input:repeat}" },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "tier",
+      "type": "pickString",
+      "description": "Model tier to force",
+      "options": ["fast", "smart"],
+      "default": "fast"
+    },
+    {
+      "id": "repeat",
+      "type": "pickString",
+      "description": "Number of repetitions",
+      "options": ["2", "3", "5"],
+      "default": "3"
+    }
+  ]
+}

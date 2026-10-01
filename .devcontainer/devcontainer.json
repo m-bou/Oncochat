@@ -6,7 +6,7 @@
   "runServices": ["ollama", "ollama-init", "app"],
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
-  "postCreateCommand": "./run.sh init && uv sync --frozen",
+  "postCreateCommand": "bash ./run.sh init && uv sync --frozen",
   "forwardPorts": [8000],
   "portsAttributes": { "8000": { "label": "OncoChat", "onAutoForward": "notify" } },
   "customizations": {

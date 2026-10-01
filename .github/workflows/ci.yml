@@ -1,0 +1,47 @@
+# Lint + offline test suite on every push and pull request.
+# The tests use a scripted fake LLM: no Ollama, no models, no Docker needed (live tests are excluded by
+# default with `-m 'not live'` in pyproject.toml). Windows runs too, since the project must work there.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install dependencies (locked)
+        run: uv sync --frozen
+      - name: ruff check
+        run: uv run ruff check . --output-format=github
+
+  test:
+    name: Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install dependencies (locked, Python from pyproject)
+        run: uv sync --frozen
+      - name: pytest (offline, fake LLM)
+        run: uv run pytest -q

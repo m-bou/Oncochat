@@ -8,8 +8,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Only the latest commit of a branch is tested: a new push cancels the run still in progress (and replaces any
+# queued one).
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 permissions:

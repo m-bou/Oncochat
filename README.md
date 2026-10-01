@@ -11,6 +11,33 @@ Everything runs locally in Docker on a 16 GB laptop, with no GPU and no API key.
 
 ![screenshot](docs/screenshot.png)
 
+## Why this project exists
+
+OncoChat is my answer to a **take-home exercise** for exercise myself and prove my AI understanding. The full brief is in
+**[docs/PROBLEM.md](docs/PROBLEM.md)**. In short:
+
+- **The task:** build the first working version of an *agentic product* that lets non-technical stakeholders
+  query a small gene-expression dataset (`data/wo_data.csv`) in natural language. It has to orchestrate two
+  functions given with the exercise and answer four example questions, including one about a cancer that isn't
+  in the data.
+- **The constraints:**
+  - a time box of about **4 hours**;
+  - Python;
+  - runnable by someone else on a standard Mac or Windows 11 laptop with 16 GB of RAM;
+  - no dependency on a GPU;
+  - Docker preferred.
+- **The rules:** coding assistants are explicitly allowed. The solution is then presented to a panel, which
+  discusses the design decisions and trade-offs.
+
+I built it with an AI coding agent (Claude Code). The architecture choices, the trade-offs and their defence are
+mine. Section 7 describes how the assistant was used, with its pros and cons.
+
+I keep this repository public as an example of how I approach an agentic product end to end:
+- **framing the problem** under real constraints;
+- **putting deterministic safeguards around an LLM** so it can't invent data;
+- **measuring quality and latency** instead of assuming them;
+- **delivering something** anyone can run with one command.
+
 ---
 
 ## 1. Run it
